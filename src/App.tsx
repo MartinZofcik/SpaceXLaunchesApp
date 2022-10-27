@@ -1,7 +1,5 @@
 import react from "react";
-import "./App.css";
 import { createClient, Provider } from "urql";
-import { Box } from "@mui/material";
 import Router from "./routes/router";
 
 const client = createClient({

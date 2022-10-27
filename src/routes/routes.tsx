@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { Route, Routes as BaseRoutes } from "react-router-dom";
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LaunchDetailScreen from "../screens/LaunchDetailScreen";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
