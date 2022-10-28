@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement } from "react";
 
 import { useQuery } from "urql";
 import LaunchCard from "./components/LaunchCard";
@@ -18,7 +18,10 @@ export interface CardData {
   id: string;
   mission_id: string;
 }
-[];
+
+export interface LaunchesPast {
+  launchesPast: CardData[];
+}
 
 const LaunchesPastQuery = `
   query {
@@ -40,7 +43,7 @@ const LaunchesPastQuery = `
 `;
 
 const HomeScreen: React.FC = (): ReactElement => {
-  const [result] = useQuery<CardData[]>({
+  const [result] = useQuery<LaunchesPast>({
     query: LaunchesPastQuery,
   });
   const { data, fetching, error } = result;
@@ -57,6 +60,9 @@ const HomeScreen: React.FC = (): ReactElement => {
         width: "100%",
         gridTemplateColumns: "1fr 1fr 1fr 1fr",
         gap: "2% 2%",
+        ["@media (max-width:1000px)"]: {
+          gridTemplateColumns: "1fr 1fr",
+        },
       }}
     >
       {data
