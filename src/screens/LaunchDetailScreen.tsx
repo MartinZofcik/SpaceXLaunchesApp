@@ -1,7 +1,9 @@
 import { IconButton } from "@mui/material";
 import React from "react";
+import axios from "axios";
+
 import { useSearchParams } from "react-router-dom";
-import { useQuery } from "urql";
+import { useQuery } from "@tanstack/react-query";
 import { Launch } from "../types/types";
 import Header from "./components/Header";
 import {
@@ -19,40 +21,29 @@ const LaunchDetailScreen = () => {
   const [searchParams] = useSearchParams();
   const id = String(searchParams.get("id"));
 
-  const LaunchByIdQuery = `
-    query ($id: ID!){
-      launch(id: $id) {
-        mission_id
-        mission_name
-        launch_site {
-          site_name
-          site_name_long
-        }
-      }
-    }
-  `;
-  const [result] = useQuery({
-    query: LaunchByIdQuery,
-    variables: {
-      id,
-    },
-  });
+  const { isLoading, error, data, isFetching } = useQuery(
+    ["launchDetail"],
+    () =>
+      axios
+        .get(`https://api.spacex.land/rest/launch/${id}`)
+        .then((res) => res.data)
+  );
 
-  const { data, fetching, error } = result;
-
-  if (fetching) return <p>Loading...</p>;
-  if (error) return <p>Oh no... {error.message}</p>;
+  if (isFetching) return <p>Loading...</p>;
+  if (error) return <p>error</p>;
 
   return (
     <>
       <Header />
-      Mission ID: <b>{data.launch.mission_id}</b>
+      Mission ID: <b>{data.mission_id}</b>
       <br />
-      Mission Name: <b>{data.launch.mission_name}</b>
+      Mission Name: <b>{data.mission_name}</b>
       <br />
-      Launch Site Name: <b>{data.launch.launch_site.site_name}</b>
+      Launch Site Name: <b>{data.launch_site?.site_name}</b>
       <br />
-      Launch Site long Name: <b>{data.launch.launch_site.site_name_long}</b>
+      Launch Site long Name: <b>{data.launch_site?.site_name_long}</b>
+      <br />
+      Details: {data.details}
       <br />
       {favorites.includes(id) ? (
         <IconButton onClick={() => removeFromFavorites(id)}>

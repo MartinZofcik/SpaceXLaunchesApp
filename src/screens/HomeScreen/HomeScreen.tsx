@@ -1,56 +1,24 @@
-import React, { ReactElement, useContext } from "react";
-
-import { useQuery } from "urql";
+import React, { ReactElement, useContext, Component } from "react";
+import axios, { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 import LaunchCard from "./components/LaunchCard";
 import { Box } from "@mui/material";
 import { Launch, LaunchesPastResult } from "../../types/types";
+import { LaunchesPast } from "../../types/common/types-reactQuery";
 // import { FavoritesContext } from "../context/FavoritesContext";
 
-export interface CardData {
-  mission_name: string;
-  launch_site: {
-    site_name: string;
-    site_name_long: string;
-  };
-  links: {
-    article_link: string;
-    flickr_images: string[];
-  };
-  launch_date_utc: string;
-  id: string;
-  mission_id: string;
-}
-
-const LaunchesPastQuery = `
-  query {
-    launchesPast(limit: 12) {
-      mission_name
-      launch_site {
-        site_name
-        site_name_long
-      }
-      links {
-        article_link
-        flickr_images
-      }
-      launch_date_utc
-      id
-    }
-  }
-`;
-
 const HomeScreen: React.FC = (): ReactElement => {
-  const [result] = useQuery({
-    query: LaunchesPastQuery,
-  });
-  const { data, fetching, error } = result;
+  const { isLoading, error, data, isFetching } = useQuery<
+    LaunchesPast,
+    AxiosError
+  >(["launchesPastData"], () =>
+    axios
+      .get("https://api.spacex.land/rest/launches-past?limit=10&offset=5")
+      .then((res) => res.data)
+  );
 
-  // const favoritesContext = useContext(FavoritesContext);
-
-  if (fetching) return <p>Loading...</p>;
-  if (error) return <p>Oh no... {error.message}</p>;
-
-  console.log(data);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <Component>{error}</Component>;
 
   return (
     <Box
@@ -65,8 +33,8 @@ const HomeScreen: React.FC = (): ReactElement => {
       }}
     >
       {data
-        ? data?.launchesPast?.map((launch) => {
-            return <LaunchCard key={launch.id} launch={launch} />;
+        ? data.map((launch) => {
+            return <LaunchCard key={launch?.id} launch={launch} />;
           })
         : null}
     </Box>
