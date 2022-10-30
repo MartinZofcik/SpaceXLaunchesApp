@@ -1,8 +1,10 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useContext } from "react";
 
 import { useQuery } from "urql";
 import LaunchCard from "./components/LaunchCard";
 import { Box } from "@mui/material";
+import { Launch, LaunchesPastResult } from "../../types/types";
+// import { FavoritesContext } from "../context/FavoritesContext";
 
 export interface CardData {
   mission_name: string;
@@ -19,13 +21,9 @@ export interface CardData {
   mission_id: string;
 }
 
-export interface LaunchesPast {
-  launchesPast: CardData[];
-}
-
 const LaunchesPastQuery = `
   query {
-    launchesPast(limit: 10) {
+    launchesPast(limit: 12) {
       mission_name
       launch_site {
         site_name
@@ -37,21 +35,20 @@ const LaunchesPastQuery = `
       }
       launch_date_utc
       id
-      mission_id
     }
   }
 `;
 
 const HomeScreen: React.FC = (): ReactElement => {
-  const [result] = useQuery<LaunchesPast>({
+  const [result] = useQuery({
     query: LaunchesPastQuery,
   });
   const { data, fetching, error } = result;
 
+  // const favoritesContext = useContext(FavoritesContext);
+
   if (fetching) return <p>Loading...</p>;
   if (error) return <p>Oh no... {error.message}</p>;
-
-  console.log(data);
 
   return (
     <Box
@@ -66,8 +63,16 @@ const HomeScreen: React.FC = (): ReactElement => {
       }}
     >
       {data
-        ? data.launchesPast.map((launch) => {
-            return <LaunchCard key={launch.mission_name} launch={launch} />;
+        ? data?.launchesPast?.map((launch) => {
+            return (
+              <LaunchCard
+                key={launch.id}
+                launch={launch}
+                // favoriteLaunch={favoritesContext?.favoriteLaunches?.includes(
+                //   launch.id
+                // )}
+              />
+            );
           })
         : null}
     </Box>

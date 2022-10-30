@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { ReactElement } from "react";
 import { BrowserRouter } from "react-router-dom";
 import Routes from "./routes";
