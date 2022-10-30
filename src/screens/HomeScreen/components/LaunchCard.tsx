@@ -34,33 +34,33 @@ const LaunchCard = ({ launch }: IProps): ReactElement => {
   ) as FavoritesContextType;
 
   return (
-    <Card sx={{ width: "100%" }}>
-      <CardActionArea
-        component={Link}
-        to={ApplicationLocations.LAUNCH_DETAIL + "?id=" + launch.id}
-      >
-        {launch.links?.flickr_images.length > 0 ? (
-          <CardMedia
-            component="img"
-            height="200"
-            image={launch.links?.flickr_images[0]}
-          />
-        ) : (
-          <Box sx={{ height: "200px", backgroundColor: "lightgrey" }} />
-        )}
+    <Card sx={{ width: "100%", height: "400px" }}>
+      {launch.links?.flickr_images.length > 0 ? (
+        <CardMedia
+          component="img"
+          height="200"
+          image={launch.links?.flickr_images[0]}
+        />
+      ) : (
+        <Box sx={{ height: "200px", backgroundColor: "lightgrey" }} />
+      )}
 
-        <CardContent>
+      <CardContent>
+        <Link
+          to={ApplicationLocations.LAUNCH_DETAIL + "?id=" + launch.id}
+          style={{ textDecoration: "none" }}
+        >
           <Typography gutterBottom variant="h5" component="div">
             {launch.mission_name}
           </Typography>
-          <Typography variant="subtitle2" color="text.secondary">
-            {launch.launch_date_utc}
-          </Typography>
-          <Typography variant="subtitle2" color="text.secondary">
-            {launch.launch_site?.site_name}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+        </Link>
+        <Typography variant="subtitle2" color="text.secondary">
+          {launch.launch_date_utc}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          {launch.launch_site?.site_name}
+        </Typography>
+      </CardContent>
       <CardActions>
         {/* <IconButton> */}
         {favorites.includes(launch.id) ? (

@@ -50,6 +50,8 @@ const HomeScreen: React.FC = (): ReactElement => {
   if (fetching) return <p>Loading...</p>;
   if (error) return <p>Oh no... {error.message}</p>;
 
+  console.log(data);
+
   return (
     <Box
       sx={{
@@ -64,15 +66,7 @@ const HomeScreen: React.FC = (): ReactElement => {
     >
       {data
         ? data?.launchesPast?.map((launch) => {
-            return (
-              <LaunchCard
-                key={launch.id}
-                launch={launch}
-                // favoriteLaunch={favoritesContext?.favoriteLaunches?.includes(
-                //   launch.id
-                // )}
-              />
-            );
+            return <LaunchCard key={launch.id} launch={launch} />;
           })
         : null}
     </Box>
